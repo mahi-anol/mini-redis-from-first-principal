@@ -1,0 +1,8 @@
+1. Why the data type and expiary time not considered in the memory calculation "_calculate_memory_usage()" method ?
+It only tracked key and value.
+
+2. In delete method, we are not checking for expiry time...so will del method work regardless of the expire time.
+
+3. In ttl why we are not checking is_key_valid().....
+
+4. get data type and get type.
