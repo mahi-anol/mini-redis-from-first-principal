@@ -6,3 +6,9 @@ It only tracked key and value.
 3. In ttl why we are not checking is_key_valid().....
 
 4. get data type and get type.
+
+5. Uptime in seconds correct? its just giving time.time()
+
+6. In command execute method all the codes count+=1 happening even before its executed..
+
+7. select.select....read kongula ar write kongula.....
