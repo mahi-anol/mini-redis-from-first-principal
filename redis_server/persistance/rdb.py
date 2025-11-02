@@ -30,45 +30,45 @@ class RDBHandler:
             compression: Enable compression
             checksum: Enable checksum verification
         """
-        self.filename=filename
-        self.compression=compression
-        self.checksum=checksum
-        self.last_save_time=0
+        self.filename=filename ## filename
+        self.compression=compression ## If we want compression or not.
+        self.checksum=checksum 
+        self.last_save_time=0 
         self._lock=threading.Lock()
         
         #Ensure directory exists
         os.makedirs(os.path.dirname(filename),exist_ok=True)
 
-        def create_snapshot(self,data_store)->bool:
-            """
-                Create a synchronous RDB snapshot.
-                Args:
-                    data_store: Current data store state
-                Returns:
-                    True if snapshot was created successfully.
+    def create_snapshot(self,data_store)->bool:
+        """
+            Create a synchronous RDB snapshot.
+            Args:
+                data_store: Current data store state
+            Returns:
+                True if snapshot was created successfully.
 
-            """
-            with self._lock:
-                try:
-                    temp_filename=f"{self.filename}.tmp"
-                    #Serialize data
-                    data=self._extract_data_store_state(data_store)
-                    binary_data=self.serialize_data(data)
-                    ### Write to temporary file
-                    with open(temp_filename,'wb') as f:
-                        f.write(binary_data)
+        """
+        with self._lock:
+            try:
+                temp_filename=f"{self.filename}.tmp"
+                #Serialize data
+                data=self._extract_data_store_state(data_store)
+                binary_data=self.serialize_data(data)
+                ### Write to temporary file
+                with open(temp_filename,'wb') as f:
+                    f.write(binary_data)
 
-                    shutil.move(temp_filename,self.filename)
+                shutil.move(temp_filename,self.filename)
 
-                    self.last_save_time=time.time()
-                    print(f"RDB snapshot saved to {self.filename}")
+                self.last_save_time=time.time()
+                print(f"RDB snapshot saved to {self.filename}")
 
-                    return True
-                except Exception as e:
-                    print(f"Error creating RDB snapshot: {e}")
-                    if os.path.exists(temp_filename):
-                        os.remove(temp_filename)
-                    return False
+                return True
+            except Exception as e:
+                print(f"Error creating RDB snapshot: {e}")
+                if os.path.exists(temp_filename):
+                    os.remove(temp_filename)
+                return False
     
     def load_snapshot(self)->Optional[Dict[str,Any]]:
         """
