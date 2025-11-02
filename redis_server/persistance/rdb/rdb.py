@@ -69,6 +69,34 @@ class RDBHandler:
                 if os.path.exists(temp_filename):
                     os.remove(temp_filename)
                 return False
+            
+    def create_background_snapshot(self, data_store) -> bool:
+        """
+        Create a background RDB snapshot using subprocess
+        
+        Args:
+            data_store: Current data store state
+            
+        Returns:
+            True if background process started successfully
+        """
+        try:
+            # For this implementation, we'll use threading instead of subprocess
+            # In production, Redis uses fork()
+            def background_save():
+                success = self.create_snapshot(data_store)
+                if success:
+                    print("Background RDB save completed")
+                else:
+                    print("Background RDB save failed")
+            
+            thread = threading.Thread(target=background_save, daemon=True)
+            thread.start()
+            return True
+            
+        except Exception as e:
+            print(f"Error starting background RDB save: {e}")
+            return False
     
     def load_snapshot(self)->Optional[Dict[str,Any]]:
         """
