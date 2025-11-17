@@ -115,31 +115,37 @@ class AOFWriter:
         try:
             with open(temp_filename,'w',encoding='utf-8') as temp_file:
                 current_time=int(time.time())
-                # Write all current kets as SET COMMANDS.
+                # Write all current keys as SET COMMANDS.
                 for key in data_store.keys():
                     value=data_store.get(key)
                     if value is not None:
                         ttl=data_store.ttl(key)
 
-                        temp_file.write(f"{current_time} SET {key} {ttl}\n")
+                        if ttl > 0:
+                            temp_file.write(f"{current_time} SET {key} {value}\n")
+                        temp_file.write(f"{current_time} EXPIRE {key} {ttl}\n")
             shutil.move(temp_filename,self.filename)
+
+            # Reopen file handle if it was already opened.
             if self.file_handle:
                 self.file_handle.close()
                 self.open()
-
             return True
+        
         except Exception as e:
             print(f"Error during Aof rewrite: {e}")
             ### Cleaning up the temporary file if it exists.
             if os.path.exists(temp_filename):
                 os.remove(temp_filename)
             return False
+        
     def get_file_size(self)->int:
         """Get current file size in bytes."""
         try:
             return os.path.getsize(self.filename)
         except OSError:
             return 0
+        
     def needs_rewrite(self,min_size:int,percentage:int)->bool:
         """
         Check if aof needs rewriting based on size thresholds
@@ -153,10 +159,10 @@ class AOFWriter:
         """
         current_size=self.get_file_size()
         if current_size<min_size:
-            return 
+            return False
         # For now,trigger rewrite if file is larger than min_size*2
         # In a real implementation,we'd comapare it with last rewrite size.
-        return current_size>min_size*2
+        return current_size > min_size*2
 
 
 

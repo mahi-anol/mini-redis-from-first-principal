@@ -1,5 +1,5 @@
 """
-Persistance Manager
+persistence Manager
 
 Central coordinator for aof operations and recovery.
 """
@@ -110,6 +110,7 @@ class PersistenceManager:
                     print("Background AOF rewrite completed.")
                 else:
                     print("Background AOF rewrite failed.")
+                    
             thread=threading.Thread(target=background_rewrite,daemon=True)
             thread.start()
             return True
@@ -118,7 +119,7 @@ class PersistenceManager:
             return False
         
     def get_stats(self)-> Dict[str,Any]:
-        """Get persistance statistics"""
+        """Get persistence statistics"""
         return{
             'aof_enabled':self.config.aof_enabled,
             'last_aof_sync_time':int(self.last_aof_sync_time),

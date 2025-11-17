@@ -159,7 +159,7 @@ class RecoveryManager:
                         parts=line.strip().split(' ',2)
                         if len(parts)>=2:
                             try:
-                                int(parts[0])
+                                int(parts[0]) #timestamp should be integer.
                             except ValueError:
                                 break
                     else:
@@ -167,10 +167,3 @@ class RecoveryManager:
             except Exception as e:
                 results['aof_valid']=False
         return results
-                
-
-
-
-
-
-

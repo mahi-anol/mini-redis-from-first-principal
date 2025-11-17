@@ -1,18 +1,18 @@
 """
-Persistance Configration Management 
+persistence Configration Management 
 
-Handles all configuration related to data persistance including AOF and RDB settings.
+Handles all configuration related to data persistence including AOF and RDB settings.
 """
 import os
 import time
 from typing import list, Tuple,Dict,Any
 
 class PersistenceConfig:
-    """Configuation class for Redis persistance settings"""
+    """Configuation class for Redis persistence settings"""
 
     def __init__(self,config_dict:Dict[str,Any]=None):
         """
-        Initialize persistance configuration
+        Initialize persistence configuration
 
         Args:
             config dict: Dictionary containing configuration options
@@ -26,7 +26,7 @@ class PersistenceConfig:
         self._validate_config()
 
     def _get_default_config(self)->Dict[str,Any]:
-        """Get default persistance configuration"""
+        """Get default persistence configuration"""
         return{
             'aof_enabled':True,
             'aof_filename':'appendonly.aof',
@@ -38,7 +38,7 @@ class PersistenceConfig:
             'temp_dir':'./data/temp',
 
             #General Settings
-            'persistance_enabled':True,
+            'persistence_enabled':True,
             'recovery_on_startup':True,
             'max_memory_usage':100*1024*1024 ## 100 MB max memeory
         }
@@ -96,5 +96,5 @@ class PersistenceConfig:
         return os.path.join(self.temp_dir,f"temp-rewrite-aof-{int(time.time())}.aof")
     def __repr__(self)->str:
         """String representation of configuration"""
-        return f"PersistanceConfig({self._config})"
+        return f"persistenceConfig({self._config})"
     
