@@ -28,6 +28,7 @@ class RedisServer:
     def _event_loop(self):
         while self.running:
             try:
+                # I/O multiplexing Redis.
                 read, _, _ = select.select(
                     [self.server_socket] + list(self.clients.keys()),
                     [], [], 1.0
@@ -47,8 +48,9 @@ class RedisServer:
     def _accept_client(self):
         client, addr = self.server_socket.accept()
         client.setblocking(False)
-        self.clients[client] = {"addr": addr, "buffer": b""}
+        self.clients[client] = {"addr": addr, "buffer": b"" }
         client.send(b"+OK\r\n")
+        print(f"A client is connected from {addr}")
 
     def _handle_client(self, client):
         try:
@@ -67,18 +69,17 @@ class RedisServer:
         buffer = self.clients[client]["buffer"]
         
         while b"\r\n" in buffer:
-            command, buffer = buffer.split(b"\r\n", 1)
+            command, buffer = buffer.split(b"\r\n", 1) #According to resp protocol multiple commands are separated by "\r\n"
             if command:
                 response = self._process_command(command.decode())
                 client.send(response)
-        
         self.clients[client]["buffer"] = buffer
 
     def _process_command(self, command_line):
         parts = command_line.strip().split()
         if not parts:
             return error("empty command")
-        return self.command_handler.execute(parts[0], *parts[1:])
+        return self.command_handler.execute(parts[0], *parts[1:]) #First part is the command and rest are the arguments.
 
     def _disconnect_client(self, client):
         client.close()
@@ -86,7 +87,7 @@ class RedisServer:
 
     def stop(self):
         self.running = False
-        for client in list(self.clients.keys()):
+        for client in list(self.clients.keys()): # The keys are actually directly the client socket. 
             self._disconnect_client(client)
         if self.server_socket:
             self.server_socket.close()

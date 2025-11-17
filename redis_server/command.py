@@ -24,6 +24,7 @@ class CommandHandler:
     
     def ping(self,*args):
         return pong()
+    
     def echo(self,*args):
         return simple_string(" ".join(args)) if args else simple_string("")
     
@@ -52,7 +53,7 @@ class CommandHandler:
         keys = self.storage.keys()
         if not keys:
             return array([])
-        return array([bulk_string(key) for key in keys])
+        return array([bulk_string(key) for key in keys]) ### sending multiple bulk string.
     
     def flushall(self, *args):
         self.storage.flush()
@@ -61,14 +62,14 @@ class CommandHandler:
     def info(self, *args):
         info = {
             "server": {
-                "redis_version": "7.0.0-custom",
+                "redis_version": "0.1.0-mahi",
                 "redis_mode": "standalone"
             },
             "stats": {
                 "total_commands_processed": 0  # Would track this in server
             },
             "keyspace": {
-                "db0": f"keys={len(self.storage.keys())},expires=0"
+                "db0": f"Total keys={len(self.storage.keys())},expires=0"
             }
         }
         sections = []

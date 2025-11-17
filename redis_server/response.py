@@ -5,7 +5,7 @@ def pong():
 
 
 def null_bulk_string():
-    ### if a key doesn't exist we will need it.
+    ### if a key doesn't exist we will need it, cause we return NULL but in binary string,
     return b"$-1\r\n"
 
 def simple_string(value):
@@ -23,6 +23,11 @@ def integer(value):
     return f":{value}\r\n".encode()
 
 def array(items):
+    """
+        Args: items that are in byte.
+        Return: byte array.
+    """
+    
     if not items:
         return b"*0\r\n"
     result=[f"*{len(items)}\r\n".encode()]
