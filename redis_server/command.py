@@ -202,7 +202,7 @@ class CommandHandler:
         return f"{bytes_count:.1f}T"  # Im assuming it wont go beyond terabyte.
 
     # persistence commands
-    def bgrewrite(self,*args):
+    def bgrewriteaof(self,*args):
         """Background AOF rewrite"""
         if not self.persistance_manager:
             return error("Persistence not enabled.")
