@@ -24,7 +24,9 @@ class CommandHandler:
             "PERSIST":self.persist,
             "TYPE":self.get_type,
             ### Persistance commands
-            "BGREWRITEAOF":self.bgrewriteaof,
+            "SAVE":self.save,
+            "BGSAVE":self.bgsace,
+            "LASTSAVE":self.lastsave,
             "CONFIG":self.config_command,
             "DEBUG":self.debug_command,
         }
@@ -194,72 +196,119 @@ class CommandHandler:
         return bulk_string("\r\n".join(sections))
 
     # persistence commands
-    def bgrewrite(self,*args):
-        """Background AOF rewrite"""
-        if not self.persistance_manager:
-            return error("Persistence not enabled.")
-        try:
-            success=self.persistance_manager.rewrite_aof_background(self.storage)
-            if success:
-                return simple_string("Background AOF rewrite started.")
-            else:
-                return error("Background AOF rewrite failed to start")
-        except Exception as e:
-            return error(f"bgrewriteaof error: {e}")
+    def _format_bytes(self, bytes_count):
+            """Format bytes in human readable format"""
+            for unit in ['B', 'K', 'M', 'G']:
+                if bytes_count < 1024:
+                    return f"{bytes_count:.1f}{unit}"
+                bytes_count /= 1024
+            return f"{bytes_count:.1f}T"
     
-    def config_command(self,*args):
+    # Persistence Commands
+    def save(self, *args):
+        """Synchronous RDB save"""
+        if not self.persistence_manager:
+            return error("persistence not enabled")
+        
+        try:
+            success = self.persistence_manager.create_rdb_snapshot(self.storage)
+            if success:
+                return ok()
+            else:
+                return error("save failed")
+        except Exception as e:
+            return error(f"save error: {e}")
+    
+    def bgsave(self, *args):
+        """Background RDB save"""
+        if not self.persistence_manager:
+            return error("persistence not enabled")
+        
+        try:
+            success = self.persistence_manager.create_rdb_snapshot_background(self.storage)
+            if success:
+                return simple_string("Background saving started")
+            else:
+                return error("background save failed to start")
+        except Exception as e:
+            return error(f"bgsave error: {e}")
+    
+    def lastsave(self, *args):
+        """Get timestamp of last successful save"""
+        if not self.persistence_manager:
+            return integer(0)
+        
+        try:
+            timestamp = self.persistence_manager.get_last_save_time()
+            return integer(timestamp)
+        except Exception as e:
+            return error(f"lastsave error: {e}")
+    
+    def config_command(self, *args):
         """CONFIG command for persistence settings"""
         if not args:
             return error("wrong number of arguments for 'config' command")
-        subcommand=args[0].upper()
-
+        
+        subcommand = args[0].upper()
+        
         if subcommand == "GET":
-            if len(args)!=2:
+            if len(args) != 2:
                 return error("wrong number of arguments for 'config get' command")
-            parameter=args[1].lower()
-            if self.persistance_manager:
-                config_value= self.persistance_manager.config.get(parameter)
+            
+            parameter = args[1].lower()
+            if self.persistence_manager:
+                config_value = self.persistence_manager.config.get(parameter)
                 if config_value is not None:
-                    return array([bulk_string(parameter),bulk_string(str(config_value))])
+                    return array([bulk_string(parameter), bulk_string(str(config_value))])
+            
             return array([])
         
-        elif subcommand=="SET":
-            if len(args)!=3:
+        elif subcommand == "SET":
+            if len(args) != 3:
                 return error("wrong number of arguments for 'config set' command")
-            parameter=args[1].lower()
-            value=args[2]
-
-            if self.persistance_manager:
+            
+            parameter = args[1].lower()
+            value = args[2]
+            
+            if self.persistence_manager:
                 try:
-                    if parameter in ['aof_enabled','persistence_enabled']:
-                        value=value.lower() in ('true',1,'yes','on')
-                    self.persistance_manager.config.set(parameter,value)
+                    # Convert string values to appropriate types
+                    if parameter in ['aof_enabled', 'rdb_enabled', 'persistence_enabled']:
+                        value = value.lower() in ('true', '1', 'yes', 'on')
+                    elif parameter in ['rdb_save_conditions']:
+                        # This would need more complex parsing
+                        return error("rdb_save_conditions cannot be set via CONFIG SET")
+                    
+                    self.persistence_manager.config.set(parameter, value)
                     return ok()
                 except Exception as e:
                     return error(f"config set error: {e}")
-            return error("persistance not enabled")
+            
+            return error("persistence not enabled")
+        
         else:
             return error(f"unknown CONFIG subcommand '{subcommand}'")
-
-    def debug_command(self,*args):
+    
+    def debug_command(self, *args):
         """DEBUG command for development/testing"""
-
         if not args:
             return error("wrong number of arguments for 'debug' command")
-
-        subcommand=args[0].upper()
-        if subcommand=="RELOAD":
-            if self.persistance_manager:
+        
+        subcommand = args[0].upper()
+        
+        if subcommand == "RELOAD":
+            if self.persistence_manager:
                 try:
-                    success=self.persistance_manager.recover_data(self.storage,self)
+                    # Reload data from persistence files
+                    success = self.persistence_manager.recover_data(self.storage, self)
                     if success:
                         return ok()
                     else:
                         return error("reload failed")
-                    
                 except Exception as e:
                     return error(f"reload error: {e}")
             else:
                 return error("persistence not enabled")
+        
         else:
-            return error(f"Unknown DEBUG subcommand '{subcommand}'")
+            return error(f"unknown DEBUG subcommand '{subcommand}'")

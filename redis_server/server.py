@@ -16,7 +16,7 @@ class RedisServer:
         self.storage = DataStore()
 
         #initialize persistence
-        self.persistence_config=persistence_config or PersistenceConfig
+        self.persistence_config=persistence_config or PersistenceConfig()
         self.persistence_manager=PersistenceManager(self.persistence_config)
 
         # Command handler needs refernce to persistence manger for logging.

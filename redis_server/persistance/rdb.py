@@ -18,8 +18,9 @@ from typing import Dict,Any,Optional
 
 class RDBHandler:
     """Handles RDB (Redis Database) snapshot operations"""
-    MAGIC_STRING=b'REDIS'
-    VERSION=b'0001'
+    
+    MAGIC_STRING=b'REDIS' #byte string
+    VERSION=b'0001' # byte string.
 
     def __init__(self,filename:str,compression:bool=True,checksum:bool=True):
         """
