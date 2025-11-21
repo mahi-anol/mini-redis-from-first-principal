@@ -20,7 +20,7 @@
 - Automated tests with **pytest**
 ---
 
-## Experience while doing the project + learnings:
+## Experience while doing the project + learnings: 
 - It took almost 1.5 months to complete this project while maintaing a full time job. Although I could have finished it earlier, but I was doing multiple other personal projects which are focused towards MLOPS and ML/ Deep Learning research. In Each weeknd I implemeted a specific feature which was maintainted in there corresponding git branch, if you are interested in specifc feature you can find it in the corresponding branch of the github repo.
 - Tried to learn in depth about python GIL/Concurrency (threading), multi client handling etc.
 - Learned some new design patterns and tried to ensure modularized coding structure as much as possible.
@@ -79,6 +79,7 @@ GET B
 <p> when you stop the server and restart again you'll see that the server is storing the state from backups and and key value pair will be restored along with their meta data. </p>
 <p> Also you can check multi client concurrency with by connecting multiple telnet seesion from different terminals.
 ---
+
 ## TODOs:
 - Implementing the pattern based PUB SUB methods.
 - creating better documentation.
