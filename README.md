@@ -3,7 +3,6 @@
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
 
 A **minimal Redis like system implemented from scratch in Python**, supporting the main Redis functionalities such as `SET`, `GET`, `DEL`, `EXPIRE`, lists, and pub/sub, Backup/recovery. 
-
 This project is implemented while doing courseworks of Backend Engineering Course by poridhi.
 I would like to express my special gratitude towards shimanta paul for his guidance throughout this project.
 ---
