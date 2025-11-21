@@ -7,12 +7,12 @@ A **minimal Redis like system implemented from scratch in Python**, supporting t
 ---
 
 ## Experience while doing the project + learnings:
-- It took almost 1.5 months to complete this project while maintaing a full time job. Although I could have finished it earlier, but I was doing multiple other personal projects which are focused towards MLOPS and ML/ Deep Learning research.
-- learnt in depth about python GIL/Concurrency (threading), multi client handling etc.
-- Tried to ensure modularized coding structure as much as possible.
+- It took almost 1.5 months to complete this project while maintaing a full time job. Although I could have finished it earlier, but I was doing multiple other personal projects which are focused towards MLOPS and ML/ Deep Learning research. In Each weeknd I implemeted a specific feature which was maintainted in there corresponding git branch, if you are interested in specifc feature you can find it in the corresponding branch of the github repo.
+- Tried to learn in depth about python GIL/Concurrency (threading), multi client handling etc.
+- Learned some new design patterns and tried to ensure modularized coding structure as much as possible.
 ---
 
-## Features
+## Features that are included so far:
 - Single threaded event loop based multi client concurrency.
 - Core Redis commands:
   - `SET`, `GET`, `DEL`, `EXPIRE`
@@ -20,10 +20,10 @@ A **minimal Redis like system implemented from scratch in Python**, supporting t
   - SET, HASH Data structure operations.
   - Pub/Sub: `PUBLISH`, `SUBSCRIBE`
 - TTL , PTTL implementation + lazy expiration.
+- Redis Native Data structures.
 - RDB and AOF backup/snapshots + recovery on startup.
 - TCP server that can be connected via **telnet** or programmatically
 - Automated tests with **pytest**
-- Editable installation for development (`pip install -e .`)
 
 ---
 
@@ -61,7 +61,7 @@ pip install .
 pip3 install .
 ```
 
-## Open 2 terminal
+## Now open 2 separate terminal instance
 ```
 ##  In first terminal do:
 # For Windows
@@ -94,7 +94,7 @@ GET B
 
 
 ## Author
-**Mahi Sarwar Anol**  
+**Mahi Sarwar Anol**
 - Email: anol.mahi@gmail.com  
 - GitHub: [mahi-anol](https://github.com/mahi-anol)  
 - LinkedIn: [Mahi Sarwar Anol](https://www.linkedin.com/in/mahi-anol)  
