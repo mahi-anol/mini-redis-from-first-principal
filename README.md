@@ -77,7 +77,7 @@ LPUSH B a b c d e
 GET B
 ```
 <p> when you stop the server and restart again you'll see that the server is storing the state from backups and and key value pair will be restored along with their meta data. </p>
-
+<p> Also you can check multi client concurrency with by connecting multiple telnet seesion from different terminals.
 ---
 ## TODOs:
 - Implementing the pattern based PUB SUB methods.
